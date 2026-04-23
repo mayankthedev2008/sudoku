@@ -690,6 +690,214 @@
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
 
+  /* ---- HOME TOP BAR ---- */
+  .home-topbar {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+  }
+  .home-icon-btn {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .home-icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 18px var(--glow);
+    transform: translateY(-2px) scale(1.07);
+  }
+  .home-icon-btn svg { width: 18px; height: 18px; }
+
+  /* ---- MODAL BACKDROP ---- */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(5,8,18,0.85);
+    backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    animation: fadeInModal 0.25s ease;
+  }
+  .modal-backdrop.hidden { display: none; }
+  @keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ---- MODAL CARD ---- */
+  .modal-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 340px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+    overflow: hidden;
+    animation: slideUpModal 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes slideUpModal {
+    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .modal-header {
+    padding: 20px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .modal-close {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text3);
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.18s;
+    line-height: 1;
+  }
+  .modal-close:hover { border-color: var(--danger); color: var(--danger); background: rgba(255,79,109,0.08); }
+  .modal-body { padding: 16px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* ---- SETTINGS ROWS ---- */
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .setting-row:hover { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); }
+  .setting-row-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .setting-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .setting-icon.blue { background: rgba(79,158,255,0.12); }
+  .setting-icon.purple { background: rgba(123,95,255,0.12); }
+  .setting-icon.green { background: rgba(0,229,200,0.12); }
+  .setting-icon svg { width: 16px; height: 16px; }
+  .setting-icon.blue svg { color: var(--accent); }
+  .setting-icon.purple svg { color: var(--accent2); }
+  .setting-icon.green svg { color: var(--accent3); }
+  .setting-text-wrap { display: flex; flex-direction: column; }
+  .setting-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .setting-desc {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    margin-top: 1px;
+    font-family: var(--font-mono);
+  }
+
+  /* ---- CREDITS CARD ---- */
+  .credits-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .credits-avatar {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 0 24px var(--glow), 0 0 48px var(--glow2);
+    animation: avatarPulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes avatarPulse {
+    0%,100% { box-shadow: 0 0 18px var(--glow), 0 0 36px var(--glow2); }
+    50% { box-shadow: 0 0 36px rgba(79,158,255,0.35), 0 0 72px rgba(123,95,255,0.2); }
+  }
+  .credits-role {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .credits-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    filter: drop-shadow(0 0 16px rgba(79,158,255,0.3));
+  }
+  .credits-tagline {
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 0.05em;
+    font-style: italic;
+  }
+  .credits-divider {
+    width: 40px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    margin: 2px 0;
+  }
+  .credits-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(79,158,255,0.1);
+    border: 1px solid rgba(79,158,255,0.25);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+  }
+
   @media (max-width: 400px) {
     .stats-bar { gap: 6px; }
     .stat-card { padding: 8px 6px; }
@@ -707,6 +915,22 @@
 
 <!-- ====== START SCREEN ====== -->
 <div class="screen" id="start-screen">
+
+  <!-- Top Bar -->
+  <div class="home-topbar">
+    <button class="home-icon-btn" onclick="toggleTheme()" id="theme-home-btn" title="Toggle Theme">
+      <svg id="theme-icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+    </button>
+    <button class="home-icon-btn" onclick="openSettings()" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+
   <div class="logo-wrap">
     <div class="logo-title">SUDOKU</div>
     <div class="logo-sub">Premium Edition &nbsp;·&nbsp; 2025</div>
@@ -723,7 +947,82 @@
       <span>HARD<span class="diff-sub">Expert</span></span>
     </button>
   </div>
-  <button class="start-btn" onclick="startGame()">▶ &nbsp; START GAME</button>
+  <button class="start-btn" onclick="startGame()">&#9654; &nbsp; START GAME</button>
+</div>
+
+<!-- ====== SETTINGS MODAL ====== -->
+<div class="modal-backdrop hidden" id="settings-modal" onclick="closeSettingsOnBg(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">SETTINGS</div>
+      <button class="modal-close" onclick="closeSettings()">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="setting-row" onclick="toggleTheme()">
+        <div class="setting-row-left">
+          <div class="setting-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+          </div>
+          <div class="setting-text-wrap">
+            <div class="setting-name">Dark Mode</div>
+            <div class="setting-desc" id="theme-setting-desc">Currently: DARK</div>
+          </div>
+        </div>
+        <div class="toggle on" id="theme-toggle-modal"></div>
+      </div>
+      <div class="setting-row" onclick="toggleSound()">
+        <div class="setting-row-left">
+          <div class="setting-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
+            </svg>
+          </div>
+          <div class="setting-text-wrap">
+            <div class="setting-name">Sound Effects</div>
+            <div class="setting-desc" id="sound-setting-desc">Currently: ON</div>
+          </div>
+        </div>
+        <div class="toggle on" id="sound-toggle-modal"></div>
+      </div>
+      <div class="setting-row" onclick="openCredits()">
+        <div class="setting-row-left">
+          <div class="setting-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+          </div>
+          <div class="setting-text-wrap">
+            <div class="setting-name">Credits</div>
+            <div class="setting-desc">Who made this?</div>
+          </div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--text3);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== CREDITS MODAL ====== -->
+<div class="modal-backdrop hidden" id="credits-modal" onclick="closeCreditsOnBg(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">CREDITS</div>
+      <button class="modal-close" onclick="closeCredits()">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="credits-card">
+        <div class="credits-avatar">&#128126;</div>
+        <div class="credits-role">Game Developer</div>
+        <div class="credits-name">MAYANK BRO</div>
+        <div class="credits-divider"></div>
+        <div class="credits-tagline">"Coded with passion, played with pride."</div>
+        <div class="credits-badge">&#9889; Premium Sudoku 2025</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ====== GAME SCREEN ====== -->
@@ -1356,11 +1655,66 @@ function spawnConfetti(){
 }
 
 /* ========= THEME ========= */
+let soundEnabled = true;
 function toggleTheme(){
   sfxClick();
   themeLight=!themeLight;
   document.body.classList.toggle('light-mode', themeLight);
   localStorage.setItem('sudoku_theme', themeLight?'light':'dark');
+  syncThemeUI();
+}
+function syncThemeUI(){
+  const tmToggle = document.getElementById('theme-toggle-modal');
+  const tmDesc = document.getElementById('theme-setting-desc');
+  if(tmToggle) tmToggle.classList.toggle('on', !themeLight);
+  if(tmDesc) tmDesc.textContent = themeLight ? 'Currently: LIGHT' : 'Currently: DARK';
+  const homeIcon = document.getElementById('theme-icon-home');
+  if(homeIcon){
+    if(themeLight){
+      homeIcon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    } else {
+      homeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    }
+  }
+}
+
+/* ========= SOUND TOGGLE ========= */
+function toggleSound(){
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('sudoku_sound', soundEnabled?'on':'off');
+  const tog = document.getElementById('sound-toggle-modal');
+  const desc = document.getElementById('sound-setting-desc');
+  if(tog) tog.classList.toggle('on', soundEnabled);
+  if(desc) desc.textContent = soundEnabled ? 'Currently: ON' : 'Currently: OFF';
+  if(soundEnabled) sfxClick();
+}
+
+/* ========= SETTINGS MODAL ========= */
+function openSettings(){
+  sfxClick();
+  syncThemeUI();
+  document.getElementById('settings-modal').classList.remove('hidden');
+}
+function closeSettings(){
+  sfxClick();
+  document.getElementById('settings-modal').classList.add('hidden');
+}
+function closeSettingsOnBg(e){
+  if(e.target===document.getElementById('settings-modal')) closeSettings();
+}
+
+/* ========= CREDITS MODAL ========= */
+function openCredits(){
+  sfxClick();
+  document.getElementById('settings-modal').classList.add('hidden');
+  document.getElementById('credits-modal').classList.remove('hidden');
+}
+function closeCredits(){
+  sfxClick();
+  document.getElementById('credits-modal').classList.add('hidden');
+}
+function closeCreditsOnBg(e){
+  if(e.target===document.getElementById('credits-modal')) closeCredits();
 }
 
 /* ========= TOAST ========= */
