@@ -84,7 +84,47 @@
     background: var(--bg);
     gap: 0;
   }
-  .logo-wrap { text-align: center; margin-bottom: 48px; }
+  /* ---- ENTRANCE KEYFRAMES ---- */
+  @keyframes logoDropIn {
+    0%   { opacity: 0; transform: translateY(-60px) scale(0.85); letter-spacing: 0.4em; }
+    60%  { opacity: 1; transform: translateY(6px) scale(1.03); }
+    80%  { transform: translateY(-3px) scale(0.99); }
+    100% { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 0.12em; }
+  }
+  @keyframes logoPulse {
+    0%,100% { filter: drop-shadow(0 0 20px rgba(79,158,255,0.3)); }
+    50%     { filter: drop-shadow(0 0 50px rgba(79,158,255,0.7)); }
+  }
+  @keyframes fadeSlideUp {
+    0%   { opacity: 0; transform: translateY(22px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes mkGlow {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.6; }
+  }
+  @keyframes startPop {
+    0%   { opacity: 0; transform: scale(0.8) translateY(18px); }
+    70%  { transform: scale(1.04) translateY(-2px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  @keyframes screenSlideOut {
+    0%   { opacity: 1; transform: scale(1) translateY(0); }
+    100% { opacity: 0; transform: scale(0.93) translateY(-40px); }
+  }
+  @keyframes screenSlideIn {
+    0%   { opacity: 0; transform: scale(1.06) translateY(30px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  #start-screen.slide-out {
+    animation: screenSlideOut 0.42s cubic-bezier(.4,0,.2,1) forwards;
+    pointer-events: none;
+  }
+  #game-screen.slide-in {
+    animation: screenSlideIn 0.42s cubic-bezier(.2,0,.2,1) forwards;
+  }
+
+  .logo-wrap { text-align: center; margin-bottom: 40px; }
   .logo-title {
     font-family: var(--font-display);
     font-size: clamp(52px, 12vw, 96px);
@@ -96,11 +136,7 @@
     background-clip: text;
     line-height: 1;
     filter: drop-shadow(0 0 30px rgba(79,158,255,0.4));
-    animation: logoPulse 3s ease-in-out infinite;
-  }
-  @keyframes logoPulse {
-    0%,100% { filter: drop-shadow(0 0 20px rgba(79,158,255,0.3)); }
-    50% { filter: drop-shadow(0 0 50px rgba(79,158,255,0.6)); }
+    animation: logoDropIn 0.9s cubic-bezier(.2,0,.2,1) both, logoPulse 3s ease-in-out 1s infinite;
   }
   .logo-sub {
     font-family: var(--font-mono);
@@ -108,7 +144,22 @@
     letter-spacing: 0.35em;
     color: var(--text3);
     text-transform: uppercase;
-    margin-top: 8px;
+    margin-top: 6px;
+    opacity: 0;
+    animation: fadeSlideUp 0.6s ease 0.75s forwards;
+  }
+  .logo-made-by {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 10px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: fadeSlideUp 0.6s ease 1.1s forwards, mkGlow 2s ease 1.7s infinite;
   }
   .diff-label {
     font-size: 11px;
@@ -117,11 +168,15 @@
     color: var(--text3);
     margin-bottom: 14px;
     font-family: var(--font-mono);
+    opacity: 0;
+    animation: fadeSlideUp 0.5s ease 1.3s forwards;
   }
   .diff-grid {
     display: flex;
     gap: 12px;
     margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeSlideUp 0.5s ease 1.5s forwards;
   }
   .diff-btn {
     flex: 1;
@@ -170,6 +225,8 @@
   .start-btn {
     width: 100%;
     max-width: 320px;
+    opacity: 0;
+    animation: startPop 0.55s cubic-bezier(.2,0,.2,1) 1.7s forwards;
     padding: 18px;
     border-radius: 16px;
     border: none;
@@ -441,19 +498,20 @@
   /* ---- NUMBER PAD ---- */
   .numpad {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 10px;
     width: 100%;
+    max-width: 400px;
     margin-bottom: 8px;
   }
   .num-btn {
-    aspect-ratio: 1;
-    border-radius: 12px;
+    aspect-ratio: 1.1;
+    border-radius: 14px;
     border: 1.5px solid var(--border2);
     background: var(--surface);
     color: var(--text);
     font-family: var(--font-display);
-    font-size: clamp(16px, 4vw, 24px);
+    font-size: clamp(22px, 6vw, 36px);
     font-weight: 700;
     cursor: pointer;
     display: flex;
@@ -464,6 +522,17 @@
     position: relative;
     overflow: hidden;
   }
+  /* Row 1: 1-5 each span 2 cols → cols 1-2, 3-4, 5-6, 7-8, 9-10 */
+  .numpad .num-btn:nth-child(1) { grid-column: 1 / span 2; }
+  .numpad .num-btn:nth-child(2) { grid-column: 3 / span 2; }
+  .numpad .num-btn:nth-child(3) { grid-column: 5 / span 2; }
+  .numpad .num-btn:nth-child(4) { grid-column: 7 / span 2; }
+  .numpad .num-btn:nth-child(5) { grid-column: 9 / span 2; }
+  /* Row 2: 6-9 each span 2 cols, offset by 1 to center → cols 2-3, 4-5, 6-7, 8-9 */
+  .numpad .num-btn:nth-child(6) { grid-column: 2 / span 2; }
+  .numpad .num-btn:nth-child(7) { grid-column: 4 / span 2; }
+  .numpad .num-btn:nth-child(8) { grid-column: 6 / span 2; }
+  .numpad .num-btn:nth-child(9) { grid-column: 8 / span 2; }
   .num-btn::after {
     content: '';
     position: absolute;
@@ -902,8 +971,8 @@
     .stats-bar { gap: 6px; }
     .stat-card { padding: 8px 6px; }
     .stat-value { font-size: 18px; }
-    .numpad { gap: 4px; }
-    .num-btn { border-radius: 8px; }
+    .numpad { gap: 7px; }
+    .num-btn { border-radius: 11px; font-size: clamp(20px, 5.5vw, 30px); }
     .ctrl-btn { padding: 8px 4px; font-size: 10px; border-radius: 10px; }
     .diff-grid { gap: 8px; }
   }
@@ -918,6 +987,12 @@
 
   <!-- Top Bar -->
   <div class="home-topbar">
+    <button class="home-icon-btn" onclick="toggleFullscreen()" id="fs-home-btn" title="Fullscreen">
+      <svg id="fs-icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+      </svg>
+    </button>
     <button class="home-icon-btn" onclick="toggleTheme()" id="theme-home-btn" title="Toggle Theme">
       <svg id="theme-icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
@@ -933,7 +1008,8 @@
 
   <div class="logo-wrap">
     <div class="logo-title">SUDOKU</div>
-    <div class="logo-sub">Premium Edition &nbsp;·&nbsp; 2025</div>
+    <div class="logo-sub">Premium Edition</div>
+    <div class="logo-made-by">made by MK</div>
   </div>
   <div class="diff-label">Select Difficulty</div>
   <div class="diff-grid">
@@ -1040,6 +1116,12 @@
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
         </button>
+        <button class="icon-btn" onclick="toggleFullscreen()" id="fs-game-btn" title="Fullscreen">
+          <svg id="fs-icon-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+          </svg>
+        </button>
         <button class="icon-btn" onclick="goHome()" title="Main menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
@@ -1056,7 +1138,7 @@
       </div>
       <div class="stat-card" id="mistakes-card">
         <div class="stat-label">Mistakes</div>
-        <div class="stat-value" id="mistakes-display">0/3</div>
+        <div class="stat-value" id="mistakes-display">0/5</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Hints</div>
@@ -1077,26 +1159,13 @@
       <div class="board" id="board"></div>
     </div>
 
-    <div class="toggle-row">
-      <div class="toggle-label">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-          <polyline points="22 4 12 14.01 9 11.01"/>
-        </svg>
-        Auto-Check Errors
-      </div>
-      <div class="toggle on" id="autocheck-toggle" onclick="toggleAutoCheck()"></div>
-    </div>
+
 
     <div class="controls-section">
       <div class="controls-row">
         <button class="ctrl-btn" onclick="undoMove()" title="Undo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>
           Undo
-        </button>
-        <button class="ctrl-btn" onclick="redoMove()" title="Redo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 014-4h12"/></svg>
-          Redo
         </button>
         <button class="ctrl-btn" id="notes-btn" onclick="toggleNotes()" title="Notes">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -1164,11 +1233,13 @@
 /* ========= AUDIO ENGINE ========= */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let actx = null;
+let soundEnabled = true;
 function getACtx() {
   if (!actx) actx = new AudioCtx();
   return actx;
 }
 function playTone(freq, type, dur, vol=0.12, gain2=0) {
+  if (!soundEnabled) return;
   try {
     const ctx = getACtx();
     const o = ctx.createOscillator();
@@ -1288,16 +1359,14 @@ function freshState(difficulty='easy'){
     selected:null,
     difficulty,
     mistakes:0,
-    maxMistakes:3,
+    maxMistakes:5,
     hints:3,
     score:0,
     time:0,
     paused:false,
     notesMode:false,
-    autoCheck:true,
     gameOver:false,
     undoStack:[],
-    redoStack:[],
   };
 }
 
@@ -1314,22 +1383,39 @@ function selectDiff(btn){
 }
 function startGame(){
   sfxClick();
-  state=freshState(selectedDiff);
-  document.getElementById('start-screen').classList.add('hidden');
-  document.getElementById('game-screen').classList.remove('hidden');
-  document.getElementById('win-overlay').classList.add('hidden');
-  renderAll();
-  startTimer();
-  loadSave();
+  const startScr = document.getElementById('start-screen');
+  const gameScr  = document.getElementById('game-screen');
+  // Slide-out animation on start screen
+  startScr.classList.add('slide-out');
+  setTimeout(() => {
+    startScr.classList.add('hidden');
+    startScr.classList.remove('slide-out');
+    state = freshState(selectedDiff);
+    gameScr.classList.remove('hidden');
+    gameScr.classList.add('slide-in');
+    document.getElementById('win-overlay').classList.add('hidden');
+    renderAll();
+    startTimer();
+    loadSave();
+    setTimeout(() => gameScr.classList.remove('slide-in'), 500);
+  }, 420);
 }
 function goHome(){
   sfxClick();
   saveCurrent();
   clearInterval(timerInterval);
-  document.getElementById('game-screen').classList.add('hidden');
+  const gameScr  = document.getElementById('game-screen');
+  const startScr = document.getElementById('start-screen');
+  gameScr.classList.add('hidden');
   document.getElementById('pause-overlay').classList.add('hidden');
   document.getElementById('win-overlay').classList.add('hidden');
-  document.getElementById('start-screen').classList.remove('hidden');
+  startScr.classList.remove('hidden');
+  // Re-trigger entrance animations by resetting the start screen elements
+  startScr.querySelectorAll('.logo-title,.logo-sub,.logo-made-by,.diff-label,.diff-grid,.start-btn').forEach(el => {
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = '';
+  });
 }
 function newGame(){
   sfxClick();
@@ -1400,7 +1486,7 @@ function updateBoardDisplay(){
       if(isGiven) cell.classList.add('given');
       else {
         cell.classList.add('user-input');
-        if(state.autoCheck && v!==state.solved[i]) cell.classList.add('wrong');
+        if(v!==state.solved[i]) cell.classList.add('wrong');
         else if(v===state.solved[i]) cell.classList.add('complete');
       }
     }
@@ -1474,22 +1560,20 @@ function inputNum(n){
   if(state.notesMode && state.board[idx]===0){
     sfxNote();
     pushUndo({type:'note', idx, prevNotes:new Set(state.notes[idx])});
-    state.redoStack=[];
-    if(state.notes[idx].has(n)) state.notes[idx].delete(n);
+      if(state.notes[idx].has(n)) state.notes[idx].delete(n);
     else state.notes[idx].add(n);
     updateBoardDisplay();
     return;
   }
 
   pushUndo({type:'input', idx, prevVal:state.board[idx], prevNotes:new Set(state.notes[idx])});
-  state.redoStack=[];
   state.notes[idx].clear();
 
   if(state.board[idx]===n){ state.board[idx]=0; updateBoardDisplay(); renderNumpad(); return; }
 
   state.board[idx]=n;
   if(n!==state.solved[idx]){
-    if(state.autoCheck){
+    if(true){
       sfxError();
       state.mistakes++;
       if(state.mistakes>=state.maxMistakes){ gameOver(); }
@@ -1520,7 +1604,6 @@ function eraseCell(){
   if(idx===null||state.given[idx]||state.gameOver) return;
   sfxClick();
   pushUndo({type:'input', idx, prevVal:state.board[idx], prevNotes:new Set(state.notes[idx])});
-  state.redoStack=[];
   state.board[idx]=0;
   state.notes[idx].clear();
   updateBoardDisplay();
@@ -1534,32 +1617,14 @@ function undoMove(){
   sfxClick();
   const a=state.undoStack.pop();
   if(a.type==='input'){
-    state.redoStack.push({type:'input', idx:a.idx, prevVal:state.board[a.idx], prevNotes:new Set(state.notes[a.idx])});
     state.board[a.idx]=a.prevVal;
     state.notes[a.idx]=new Set(a.prevNotes);
   } else if(a.type==='note'){
-    state.redoStack.push({type:'note', idx:a.idx, prevNotes:new Set(state.notes[a.idx])});
     state.notes[a.idx]=new Set(a.prevNotes);
   }
   updateBoardDisplay();
   renderNumpad();
 }
-function redoMove(){
-  if(!state.redoStack.length) return;
-  sfxClick();
-  const a=state.redoStack.pop();
-  if(a.type==='input'){
-    state.undoStack.push({type:'input', idx:a.idx, prevVal:state.board[a.idx], prevNotes:new Set(state.notes[a.idx])});
-    state.board[a.idx]=a.prevVal;
-    state.notes[a.idx]=new Set(a.prevNotes);
-  } else if(a.type==='note'){
-    state.undoStack.push({type:'note', idx:a.idx, prevNotes:new Set(state.notes[a.idx])});
-    state.notes[a.idx]=new Set(a.prevNotes);
-  }
-  updateBoardDisplay();
-  renderNumpad();
-}
-
 /* ========= NOTES ========= */
 function toggleNotes(){
   sfxClick();
@@ -1589,15 +1654,6 @@ function useHint(){
   renderNumpad();
   updateStats();
   checkWin();
-}
-
-/* ========= AUTO-CHECK ========= */
-function toggleAutoCheck(){
-  sfxClick();
-  state.autoCheck=!state.autoCheck;
-  document.getElementById('autocheck-toggle').classList.toggle('on', state.autoCheck);
-  showToast(state.autoCheck?'Auto-check ON':'Auto-check OFF');
-  updateBoardDisplay();
 }
 
 /* ========= PAUSE ========= */
@@ -1654,8 +1710,27 @@ function spawnConfetti(){
   }
 }
 
+/* ========= FULLSCREEN ========= */
+function toggleFullscreen(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(()=>{});
+  } else {
+    document.exitFullscreen().catch(()=>{});
+  }
+}
+function updateFsIcons(){
+  const isFs = !!document.fullscreenElement;
+  const expandIcon = '<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>';
+  const compressIcon = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>';
+  const icon = isFs ? compressIcon : expandIcon;
+  const h = document.getElementById('fs-icon-home');
+  const g = document.getElementById('fs-icon-game');
+  if(h) h.innerHTML = icon;
+  if(g) g.innerHTML = icon;
+}
+document.addEventListener('fullscreenchange', updateFsIcons);
+
 /* ========= THEME ========= */
-let soundEnabled = true;
 function toggleTheme(){
   sfxClick();
   themeLight=!themeLight;
@@ -1732,7 +1807,6 @@ document.addEventListener('keydown', e=>{
   if(k>='1'&&k<='9') { inputNum(parseInt(k)); return; }
   if(k==='Backspace'||k==='Delete') { eraseCell(); return; }
   if(k==='z'&&(e.ctrlKey||e.metaKey)) { e.preventDefault(); undoMove(); return; }
-  if(k==='y'&&(e.ctrlKey||e.metaKey)) { e.preventDefault(); redoMove(); return; }
   if(state.selected===null) return;
   const idx=state.selected;
   let next=idx;
@@ -1753,8 +1827,7 @@ function saveCurrent(){
       ...state,
       notes: state.notes.map(s=>[...s]),
       undoStack: [],
-      redoStack: [],
-    };
+      };
     localStorage.setItem('sudoku_save', JSON.stringify(save));
   } catch(e){}
 }
@@ -1766,7 +1839,6 @@ function loadSave(){
     if(save.difficulty!==state.difficulty) return;
     save.notes=save.notes.map(a=>new Set(a));
     save.undoStack=[];
-    save.redoStack=[];
     state={...save};
     showToast('Progress restored!');
     updateBoardDisplay();
