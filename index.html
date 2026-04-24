@@ -429,8 +429,62 @@
   .cell.highlight-same { background: rgba(79,158,255,0.14); }
   .cell.selected { background: rgba(79,158,255,0.2) !important; box-shadow: inset 0 0 0 2px var(--accent); z-index: 1; }
   .cell.selected.wrong { box-shadow: inset 0 0 0 2px var(--danger); }
-  .cell.complete { color: var(--success); }
+  .cell.complete {
+    color: var(--success);
+    cursor: default;
+  }
+  .cell.complete:hover {
+    background: rgba(0,229,160,0.06) !important;
+  }
   .cell.hint-cell { animation: hintReveal 0.5s ease; color: var(--accent3); }
+
+  /* ── Completion Flash — Row / Col ── */
+  @keyframes lineFlashBg {
+    0%   { background: rgba(0,229,160,0.0); }
+    15%  { background: rgba(0,229,160,0.32); }
+    45%  { background: rgba(0,229,160,0.16); }
+    70%  { background: rgba(0,229,160,0.28); }
+    100% { background: rgba(0,229,160,0.0); }
+  }
+  @keyframes lineFlashNum {
+    0%,100% { color: inherit; text-shadow: none; transform: scale(1); }
+    20%     { color: #00e5a0; text-shadow: 0 0 14px rgba(0,229,160,0.95); transform: scale(1.18); }
+    55%     { color: #00e5a0; text-shadow: 0 0 8px rgba(0,229,160,0.6);  transform: scale(1.08); }
+    80%     { color: #00e5a0; text-shadow: 0 0 12px rgba(0,229,160,0.8); transform: scale(1.12); }
+  }
+  @keyframes lineFlashBorder {
+    0%,100% { box-shadow: none; }
+    20%     { box-shadow: inset 0 0 0 2.5px #00e5a0, 0 0 14px rgba(0,229,160,0.5); }
+    55%     { box-shadow: inset 0 0 0 1.5px rgba(0,229,160,0.5); }
+    80%     { box-shadow: inset 0 0 0 2px #00e5a0, 0 0 10px rgba(0,229,160,0.4); }
+  }
+
+  /* ── Completion Flash — 3x3 Box ── */
+  @keyframes boxFlashBg {
+    0%   { background: rgba(0,229,160,0.0); }
+    15%  { background: rgba(0,229,160,0.32); }
+    45%  { background: rgba(0,229,160,0.16); }
+    70%  { background: rgba(0,229,160,0.28); }
+    100% { background: rgba(0,229,160,0.0); }
+  }
+  @keyframes boxFlashNum {
+    0%,100% { color: inherit; text-shadow: none; transform: scale(1); }
+    20%     { color: #00e5a0; text-shadow: 0 0 14px rgba(0,229,160,0.95); transform: scale(1.18); }
+    55%     { color: #00e5a0; text-shadow: 0 0 8px rgba(0,229,160,0.6);  transform: scale(1.08); }
+    80%     { color: #00e5a0; text-shadow: 0 0 12px rgba(0,229,160,0.8); transform: scale(1.12); }
+  }
+  @keyframes boxFlashBorder {
+    0%,100% { box-shadow: none; }
+    20%     { box-shadow: inset 0 0 0 2.5px #00e5a0, 0 0 14px rgba(0,229,160,0.5); }
+    55%     { box-shadow: inset 0 0 0 1.5px rgba(0,229,160,0.5); }
+    80%     { box-shadow: inset 0 0 0 2px #00e5a0, 0 0 10px rgba(0,229,160,0.4); }
+  }
+
+  /* Apply classes */
+  .cell.line-flash    { animation: lineFlashBg 2s ease forwards, lineFlashBorder 2s ease forwards !important; z-index: 3; }
+  .cell.line-flash-n  { animation: lineFlashNum 2s ease forwards !important; }
+  .cell.box-flash     { animation: boxFlashBg  2s ease forwards, boxFlashBorder  2s ease forwards !important; z-index: 3; }
+  .cell.box-flash-n   { animation: boxFlashNum  2s ease forwards !important; }
   @keyframes shake {
     0%,100% { transform: translateX(0); }
     20% { transform: translateX(-4px); }
@@ -577,8 +631,8 @@
     background: rgba(8,12,20,0.96);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 20px;
-    backdrop-filter: blur(8px);
+    gap: 24px;
+    backdrop-filter: blur(12px);
   }
   #pause-overlay.hidden { display: none; }
   .pause-title {
@@ -587,7 +641,41 @@
     font-weight: 700;
     letter-spacing: 0.15em;
     color: var(--text2);
+    margin-bottom: 4px;
   }
+  .pause-action-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .pause-icon-btn {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pause-icon-btn svg { width: 20px; height: 20px; }
+  .pause-icon-btn span {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .pause-icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 20px var(--glow), 0 6px 20px rgba(0,0,0,0.3);
+    transform: translateY(-3px) scale(1.08);
+  }
+  .pause-icon-btn:hover span { color: var(--accent); }
   .resume-btn {
     padding: 16px 48px;
     border-radius: 16px;
@@ -1107,25 +1195,9 @@
     <div class="header">
       <div class="header-logo">SUDOKU</div>
       <div class="header-actions">
-        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/>
-            <line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-          </svg>
-        </button>
-        <button class="icon-btn" onclick="toggleFullscreen()" id="fs-game-btn" title="Fullscreen">
-          <svg id="fs-icon-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
-            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-          </svg>
-        </button>
-        <button class="icon-btn" onclick="goHome()" title="Main menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
+        <button class="icon-btn" id="pause-header-btn" onclick="togglePause()" title="Pause / Resume">
+          <svg id="pause-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
           </svg>
         </button>
       </div>
@@ -1167,6 +1239,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>
           Undo
         </button>
+        <button class="ctrl-btn danger-btn" onclick="eraseCell()" title="Erase">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+          Erase
+        </button>
         <button class="ctrl-btn" id="notes-btn" onclick="toggleNotes()" title="Notes">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Notes
@@ -1176,10 +1252,6 @@
           Hint
           <span class="hint-count" id="hint-count-label">3 left</span>
         </button>
-        <button class="ctrl-btn" onclick="togglePause()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="pause-icon"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-          Pause
-        </button>
         <button class="ctrl-btn danger-btn" onclick="newGame()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
           New
@@ -1188,12 +1260,7 @@
     </div>
 
     <div class="numpad" id="numpad"></div>
-    <div class="erase-row">
-      <button class="erase-btn" onclick="eraseCell()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-        Erase
-      </button>
-    </div>
+
   </div>
 </div>
 
@@ -1201,6 +1268,28 @@
 <div id="pause-overlay" class="hidden">
   <div class="pause-title">PAUSED</div>
   <button class="resume-btn" onclick="togglePause()">▶ RESUME</button>
+  <div class="pause-action-row">
+    <button class="pause-icon-btn" onclick="toggleThemeFromPause()" title="Toggle Theme" id="pause-theme-btn">
+      <svg id="pause-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+      <span>Theme</span>
+    </button>
+    <button class="pause-icon-btn" onclick="toggleFullscreen()" title="Fullscreen" id="pause-fs-btn">
+      <svg id="fs-icon-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+      </svg>
+      <span>Fullscr</span>
+    </button>
+    <button class="pause-icon-btn" onclick="goHome()" title="Main Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Home</span>
+    </button>
+  </div>
 </div>
 
 <!-- ====== WIN OVERLAY ====== -->
@@ -1533,7 +1622,6 @@ function updateStats(){
   document.getElementById('hints-display').textContent=state.hints;
   document.getElementById('score-display').textContent=state.score;
   document.getElementById('hint-count-label').textContent=`${state.hints} left`;
-  if(state.hints<=0) document.getElementById('hint-btn').style.opacity='0.4';
   updateTimerDisplay();
 }
 function updateDiffBadge(){
@@ -1549,27 +1637,32 @@ function selectCell(idx){
   sfxClick();
   state.selected=idx;
   updateBoardDisplay();
+  renderNumpad();
+  updateHintBtn();
 }
 
 /* ========= INPUT ========= */
 function inputNum(n){
   const idx=state.selected;
   if(idx===null||state.given[idx]||state.gameOver) return;
+  if(state.board[idx]!==0 && state.board[idx]===state.solved[idx]) return; // correct cell locked
   sfxClick();
 
   if(state.notesMode && state.board[idx]===0){
     sfxNote();
     pushUndo({type:'note', idx, prevNotes:new Set(state.notes[idx])});
-      if(state.notes[idx].has(n)) state.notes[idx].delete(n);
+    if(state.notes[idx].has(n)) state.notes[idx].delete(n);
     else state.notes[idx].add(n);
     updateBoardDisplay();
+    renderNumpad();
     return;
   }
 
   pushUndo({type:'input', idx, prevVal:state.board[idx], prevNotes:new Set(state.notes[idx])});
   state.notes[idx].clear();
 
-  if(state.board[idx]===n){ state.board[idx]=0; updateBoardDisplay(); renderNumpad(); return; }
+  // Allow toggle-off only if cell is wrong (correct cells already blocked above)
+  if(state.board[idx]===n && state.board[idx]!==state.solved[idx]){ state.board[idx]=0; updateBoardDisplay(); renderNumpad(); updateHintBtn(); return; }
 
   state.board[idx]=n;
   if(n!==state.solved[idx]){
@@ -1586,6 +1679,8 @@ function inputNum(n){
   updateBoardDisplay();
   renderNumpad();
   updateStats();
+  updateHintBtn();
+  checkCompletions(idx);
   checkWin();
 }
 
@@ -1602,12 +1697,14 @@ function clearNotesAround(idx, n){
 function eraseCell(){
   const idx=state.selected;
   if(idx===null||state.given[idx]||state.gameOver) return;
+  if(state.board[idx]!==0 && state.board[idx]===state.solved[idx]) return; // correct cell locked
   sfxClick();
   pushUndo({type:'input', idx, prevVal:state.board[idx], prevNotes:new Set(state.notes[idx])});
   state.board[idx]=0;
   state.notes[idx].clear();
   updateBoardDisplay();
   renderNumpad();
+  updateHintBtn();
 }
 
 /* ========= UNDO/REDO ========= */
@@ -1617,6 +1714,12 @@ function undoMove(){
   sfxClick();
   const a=state.undoStack.pop();
   if(a.type==='input'){
+    // Agar current value correct hai to undo nahi hoga
+    if(state.board[a.idx]!==0 && state.board[a.idx]===state.solved[a.idx]){
+      state.undoStack.push(a); // wapas daalo
+      showToast('Sahi bhari cell undo nahi ho sakti!');
+      return;
+    }
     state.board[a.idx]=a.prevVal;
     state.notes[a.idx]=new Set(a.prevNotes);
   } else if(a.type==='note'){
@@ -1624,6 +1727,7 @@ function undoMove(){
   }
   updateBoardDisplay();
   renderNumpad();
+  updateHintBtn();
 }
 /* ========= NOTES ========= */
 function toggleNotes(){
@@ -1637,11 +1741,17 @@ function toggleNotes(){
 function useHint(){
   if(state.hints<=0){ showToast('No hints left!'); return; }
   if(state.gameOver) return;
+
+  const idx = state.selected;
+
+  // Koi cell select nahi — toast dikhao
+  if(idx === null){ showToast('Pehle ek khaali cell select karo!'); return; }
+  // Selected cell already filled hai
+  if(state.board[idx] !== 0){ showToast('Yeh cell already bhari hui hai!'); return; }
+  // Given cell hai (pre-filled)
+  if(state.given[idx]){ showToast('Yeh cell change nahi ho sakti!'); return; }
+
   sfxHint();
-  const empties=[];
-  for(let i=0;i<81;i++) if(state.board[i]===0) empties.push(i);
-  if(!empties.length) return;
-  const idx=empties[Math.floor(Math.random()*empties.length)];
   pushUndo({type:'input', idx, prevVal:0, prevNotes:new Set(state.notes[idx])});
   state.board[idx]=state.solved[idx];
   state.notes[idx].clear();
@@ -1653,7 +1763,38 @@ function useHint(){
   updateBoardDisplay();
   renderNumpad();
   updateStats();
+  updateHintBtn();
+  checkCompletions(idx);
   checkWin();
+}
+
+/* hint button show/hide based on selected cell */
+function updateHintBtn(){
+  const btn = document.getElementById('hint-btn');
+  if(!btn) return;
+  const idx = state.selected;
+  const isActive =
+    state.hints > 0 &&
+    idx !== null &&
+    !state.given[idx] &&
+    state.board[idx] === 0;
+  btn.style.opacity        = isActive ? '1' : '0.35';
+  btn.style.pointerEvents  = isActive ? '' : 'none';
+  btn.style.filter         = isActive ? '' : 'grayscale(0.5)';
+  btn.style.transition     = 'opacity 0.3s, filter 0.3s';
+}
+
+/* theme toggle from pause overlay */
+function toggleThemeFromPause(){
+  toggleTheme();
+  // update pause overlay theme icon
+  const icon = document.getElementById('pause-theme-icon');
+  if(!icon) return;
+  if(themeLight){
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+  }
 }
 
 /* ========= PAUSE ========= */
@@ -1661,9 +1802,96 @@ function togglePause(){
   sfxClick();
   state.paused=!state.paused;
   document.getElementById('pause-overlay').classList.toggle('hidden',!state.paused);
+  const icon = document.getElementById('pause-icon');
+  if(icon){
+    if(state.paused){
+      icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+    } else {
+      icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    }
+  }
 }
 
 /* ========= WIN/GAMEOVER ========= */
+/* ── Flash cells with staggered wave delay ── */
+function flashLine(indices){
+  const boardEl = document.getElementById('board');
+  // Remove any existing flash first
+  indices.forEach(i => {
+    const c = boardEl.children[i];
+    c.classList.remove('line-flash','line-flash-n','box-flash','box-flash-n');
+  });
+  // Force reflow then apply with stagger
+  void boardEl.offsetWidth;
+  indices.forEach((i, pos) => {
+    const c = boardEl.children[i];
+    const delay = pos * 55; // wave effect left→right or top→bottom
+    c.style.animationDelay = delay + 'ms';
+    c.classList.add('line-flash', 'line-flash-n');
+  });
+  // Cleanup after animation
+  setTimeout(() => {
+    indices.forEach(i => {
+      const c = boardEl.children[i];
+      c.classList.remove('line-flash','line-flash-n');
+      c.style.animationDelay = '';
+    });
+  }, 2200);
+}
+
+function flashBox(indices){
+  const boardEl = document.getElementById('board');
+  indices.forEach(i => {
+    const c = boardEl.children[i];
+    c.classList.remove('line-flash','line-flash-n','box-flash','box-flash-n');
+  });
+  void boardEl.offsetWidth;
+  // Box: wave goes row by row inside the 3x3
+  indices.forEach((i, pos) => {
+    const c = boardEl.children[i];
+    const row = Math.floor(pos / 3);
+    const col = pos % 3;
+    const delay = (row + col) * 60; // diagonal wave
+    c.style.animationDelay = delay + 'ms';
+    c.classList.add('box-flash', 'box-flash-n');
+  });
+  setTimeout(() => {
+    indices.forEach(i => {
+      const c = boardEl.children[i];
+      c.classList.remove('box-flash','box-flash-n');
+      c.style.animationDelay = '';
+    });
+  }, 2200);
+}
+
+function checkCompletions(lastIdx){
+  if(lastIdx === null || state.board[lastIdx] !== state.solved[lastIdx]) return;
+
+  const r  = Math.floor(lastIdx / 9);
+  const c  = lastIdx % 9;
+  const br = Math.floor(r / 3) * 3;
+  const bc = Math.floor(c / 3) * 3;
+
+  // Row
+  const rowIdx = Array.from({length:9}, (_,i) => r*9 + i);
+  if(rowIdx.every(i => state.board[i] !== 0 && state.board[i] === state.solved[i])){
+    setTimeout(() => flashLine(rowIdx), 100);
+  }
+
+  // Col
+  const colIdx = Array.from({length:9}, (_,i) => i*9 + c);
+  if(colIdx.every(i => state.board[i] !== 0 && state.board[i] === state.solved[i])){
+    setTimeout(() => flashLine(colIdx), 100);
+  }
+
+  // 3x3 Box
+  const boxIdx = [];
+  for(let rr=0; rr<3; rr++) for(let cc=0; cc<3; cc++) boxIdx.push((br+rr)*9+(bc+cc));
+  if(boxIdx.every(i => state.board[i] !== 0 && state.board[i] === state.solved[i])){
+    setTimeout(() => flashBox(boxIdx), 200);
+  }
+}
+
 function checkWin(){
   for(let i=0;i<81;i++) if(state.board[i]!==state.solved[i]) return;
   triggerWin();
