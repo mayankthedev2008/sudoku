@@ -61,18 +61,27 @@
   }
 
   /* ---- PARTICLES ---- */
+
+  /* Number Rain */
   #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-  .particle {
-    position: absolute;
-    border-radius: 50%;
+  .num-drop {
+    position: fixed;
+    top: -80px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
     opacity: 0;
-    animation: floatUp linear infinite;
+    animation: numRain linear infinite;
+    will-change: transform, opacity;
+    z-index: 0;
   }
-  @keyframes floatUp {
-    0% { transform: translateY(110vh) scale(0); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 0.6; }
-    100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+  @keyframes numRain {
+    0%   { transform: translateY(0px);   opacity: 0; }
+    4%   { opacity: 1; }
+    88%  { opacity: 0.7; }
+    100% { transform: translateY(110vh); opacity: 0; }
   }
 
   /* ---- SCREENS ---- */
@@ -84,9 +93,10 @@
     background: var(--bg);
     gap: 0;
     overflow-y: auto;
-    justify-content: flex-start;
-    padding: 100px 24px 32px;
+    justify-content: center;
+    padding: 80px 24px 32px;
     align-items: center;
+    min-height: 100vh;
   }
   /* ---- ENTRANCE KEYFRAMES ---- */
   @keyframes logoDropIn {
@@ -1774,19 +1784,30 @@ function sfxNote() { playTone(1200, 'sine', 0.05, 0.05); }
 /* ========= PARTICLES ========= */
 function initParticles() {
   const c = document.getElementById('particles');
-  const colors = ['rgba(79,158,255,0.4)','rgba(123,95,255,0.3)','rgba(0,229,200,0.3)'];
-  for(let i=0;i<18;i++){
-    const p = document.createElement('div');
-    p.className='particle';
-    const size = Math.random()*4+2;
-    p.style.cssText=`
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${8+Math.random()*15}s;
-      animation-delay:${-Math.random()*20}s;
-    `;
-    c.appendChild(p);
+  const nums = ['1','2','3','4','5','6','7','8','9'];
+  const colorSets = [
+    [79,158,255],   // blue
+    [123,95,255],   // purple
+    [0,229,200],    // cyan
+  ];
+  const count = 42;
+  for(let i = 0; i < count; i++){
+    const el  = document.createElement('div');
+    el.className = 'num-drop';
+    const num  = nums[Math.floor(Math.random() * 9)];
+    const size = Math.random() * 22 + 12;          // 12–34px
+    const dur  = Math.random() * 10 + 8;           // 8–18s
+    const delay = -(Math.random() * 18);            // stagger so they dont all start together
+    const left  = Math.random() * 98 + 1;           // 1–99%
+    const alpha = (Math.random() * 0.22 + 0.10).toFixed(2); // 0.10–0.32 — clearly visible
+    const [r,g,b] = colorSets[Math.floor(Math.random() * colorSets.length)];
+    el.textContent = num;
+    el.style.left            = left + '%';
+    el.style.fontSize        = size + 'px';
+    el.style.color           = `rgba(${r},${g},${b},${alpha})`;
+    el.style.animationDuration  = dur + 's';
+    el.style.animationDelay     = delay + 's';
+    c.appendChild(el);
   }
 }
 initParticles();
