@@ -83,6 +83,10 @@
   #start-screen {
     background: var(--bg);
     gap: 0;
+    overflow-y: auto;
+    justify-content: flex-start;
+    padding: 100px 24px 32px;
+    align-items: center;
   }
   /* ---- ENTRANCE KEYFRAMES ---- */
   @keyframes logoDropIn {
@@ -124,17 +128,19 @@
     animation: screenSlideIn 0.42s cubic-bezier(.2,0,.2,1) forwards;
   }
 
-  .logo-wrap { text-align: center; margin-bottom: 40px; }
+  .logo-wrap { text-align: center; margin-bottom: 24px; width: 100%; max-width: 360px; overflow: visible; }
   .logo-title {
     font-family: var(--font-display);
-    font-size: clamp(52px, 12vw, 96px);
+    font-size: clamp(44px, 10vw, 80px);
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     line-height: 1;
+    width: 100%;
+    text-align: center;
     filter: drop-shadow(0 0 30px rgba(79,158,255,0.4));
     animation: logoDropIn 0.9s cubic-bezier(.2,0,.2,1) both, logoPulse 3s ease-in-out 1s infinite;
   }
@@ -166,22 +172,24 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text3);
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     font-family: var(--font-mono);
     opacity: 0;
+    width: 100%; max-width: 320px;
     animation: fadeSlideUp 0.5s ease 1.3s forwards;
   }
   .diff-grid {
     display: flex;
-    gap: 12px;
-    margin-bottom: 36px;
+    gap: 10px;
+    margin-bottom: 16px;
     opacity: 0;
+    width: 100%; max-width: 320px;
     animation: fadeSlideUp 0.5s ease 1.5s forwards;
   }
   .diff-btn {
     flex: 1;
-    min-width: 90px;
-    padding: 14px 20px;
+    min-width: 80px;
+    padding: 11px 12px;
     border-radius: 14px;
     border: 1.5px solid var(--border2);
     background: var(--surface);
@@ -227,7 +235,7 @@
     max-width: 320px;
     opacity: 0;
     animation: startPop 0.55s cubic-bezier(.2,0,.2,1) 1.7s forwards;
-    padding: 18px;
+    padding: 16px;
     border-radius: 16px;
     border: none;
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
@@ -254,6 +262,20 @@
   .start-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 14px 40px rgba(79,158,255,0.5); }
   .start-btn:hover::before { opacity: 1; }
   .start-btn:active { transform: scale(0.98); }
+
+
+
+
+
+  /* left accent bar */
+
+
+
+
+
+
+
+
 
   /* ---- GAME SCREEN ---- */
   #game-screen {
@@ -601,6 +623,23 @@
   .num-btn.completed { opacity: 0.25; pointer-events: none; }
   .num-btn span { position: relative; z-index: 1; }
 
+  /* ---- Note highlight on numpad ---- */
+  .num-btn.note-active {
+    border-color: #00e5a0 !important;
+    color: #00e5a0 !important;
+    background: rgba(0,229,160,0.12) !important;
+    box-shadow: 0 0 18px rgba(0,229,160,0.4), 0 4px 16px rgba(0,229,160,0.18) !important;
+    transform: translateY(-2px) scale(1.06) !important;
+  }
+  .num-btn.note-active::after {
+    background: radial-gradient(circle at center, #00e5a0 0%, transparent 70%) !important;
+    opacity: 0.15 !important;
+  }
+  .num-btn.note-active span {
+    text-shadow: 0 0 12px rgba(0,229,160,0.7);
+  }
+
+
   /* ---- ERASE BTN ---- */
   .erase-row {
     display: flex;
@@ -626,71 +665,219 @@
   .erase-btn:hover { border-color: var(--danger); color: var(--danger); box-shadow: 0 4px 14px rgba(255,79,109,0.2); transform: translateY(-1px); }
 
   /* ---- PAUSE OVERLAY ---- */
+  /* ── PAUSE OVERLAY ── */
   #pause-overlay {
     position: fixed; inset: 0; z-index: 20;
-    background: rgba(8,12,20,0.96);
+    background: transparent;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 24px;
-    backdrop-filter: blur(12px);
+    gap: 0;
   }
   #pause-overlay.hidden { display: none; }
+
+  /* animated scanline bg */
+  .pause-bg {
+    position: absolute; inset: 0;
+    background: rgba(4,8,20,0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .pause-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(79,158,255,0.025) 3px,
+      rgba(79,158,255,0.025) 4px
+    );
+    pointer-events: none;
+    animation: scanMove 6s linear infinite;
+  }
+  @keyframes scanMove {
+    from { background-position: 0 0; }
+    to   { background-position: 0 100px; }
+  }
+
+  /* center glow blob */
+  .pause-glow {
+    position: absolute;
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,158,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    animation: blobPulse 3s ease-in-out infinite;
+  }
+  @keyframes blobPulse {
+    0%,100% { transform: scale(1);    opacity: 0.7; }
+    50%      { transform: scale(1.15); opacity: 1; }
+  }
+
+  .pause-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 36px;
+    animation: pauseIn 0.4s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes pauseIn {
+    from { transform: translateY(24px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  /* big PAUSED text */
   .pause-title {
     font-family: var(--font-display);
-    font-size: 52px;
+    font-size: clamp(52px, 14vw, 88px);
     font-weight: 700;
-    letter-spacing: 0.15em;
-    color: var(--text2);
-    margin-bottom: 4px;
+    letter-spacing: 0.2em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(79,158,255,0.5);
+    text-stroke: 1.5px rgba(79,158,255,0.5);
+    position: relative;
+    line-height: 1;
+    user-select: none;
   }
-  .pause-action-row {
-    display: flex;
-    gap: 16px;
-    align-items: center;
+  .pause-title::after {
+    content: attr(data-text);
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 0;
+    opacity: 0;
+    animation: titleFlicker 4s ease-in-out infinite;
   }
-  .pause-icon-btn {
-    width: 52px; height: 52px;
+  @keyframes titleFlicker {
+    0%,100% { opacity: 0.15; }
+    45%,55% { opacity: 0.9; }
+    48%,52% { opacity: 0.3; }
+  }
+
+  /* stat pills */
+  .pause-pills {
+    display: flex; gap: 12px;
+  }
+  .pause-pill {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(79,158,255,0.15);
     border-radius: 14px;
-    border: 1.5px solid var(--border2);
-    background: var(--surface);
-    color: var(--text2);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: all 0.22s cubic-bezier(.4,0,.2,1);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    flex-direction: column;
-    gap: 4px;
+    backdrop-filter: blur(6px);
+    min-width: 72px;
+    transition: border-color 0.3s;
   }
-  .pause-icon-btn svg { width: 20px; height: 20px; }
-  .pause-icon-btn span {
-    font-size: 9px;
+  .pause-pill:hover { border-color: rgba(79,158,255,0.4); }
+  .pause-pill-label {
+    font-size: 8px;
     font-family: var(--font-mono);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text3);
+    margin-bottom: 4px;
   }
-  .pause-icon-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 0 20px var(--glow), 0 6px 20px rgba(0,0,0,0.3);
-    transform: translateY(-3px) scale(1.08);
-  }
-  .pause-icon-btn:hover span { color: var(--accent); }
-  .resume-btn {
-    padding: 16px 48px;
-    border-radius: 16px;
-    border: 1.5px solid var(--accent);
-    background: transparent;
-    color: var(--accent);
+  .pause-pill-val {
     font-family: var(--font-display);
     font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 0 20px var(--glow);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
   }
-  .resume-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 8px 30px rgba(79,158,255,0.4); transform: translateY(-2px); }
+
+  /* resume button */
+  .resume-btn {
+    position: relative;
+    padding: 16px 52px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 0 0 0 rgba(79,158,255,0.4);
+    animation: resumePulse 2.5s ease-in-out infinite;
+  }
+  @keyframes resumePulse {
+    0%,100% { box-shadow: 0 0 0 0   rgba(79,158,255,0.3), 0 8px 28px rgba(79,158,255,0.3); }
+    50%      { box-shadow: 0 0 0 10px rgba(79,158,255,0),  0 8px 28px rgba(79,158,255,0.5); }
+  }
+  .resume-btn::before {
+    content: '';
+    position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%;
+    background: rgba(255,255,255,0.18);
+    transform: skewX(-20deg);
+    transition: left 0.5s;
+  }
+  .resume-btn:hover::before { left: 130%; }
+  .resume-btn:hover { transform: translateY(-3px) scale(1.04); filter: brightness(1.12); }
+  .resume-btn:active { transform: scale(0.96); }
+
+  /* bottom pill buttons */
+  .pause-action-row {
+    display: flex; flex-direction: column; gap: 10px; width: min(88vw, 320px);
+  }
+  .pause-icon-btn {
+    display: flex; flex-direction: row;
+    align-items: center; justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: var(--text2);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    backdrop-filter: blur(8px);
+    width: 100%;
+  }
+  .pause-icon-btn::before {
+    content: '';
+    position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%;
+    background: rgba(255,255,255,0.08);
+    transform: skewX(-20deg);
+    transition: left 0.45s;
+  }
+  .pause-icon-btn:hover::before { left: 130%; }
+  .pause-icon-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .pause-icon-btn span {
+    font-size: 17px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .pause-icon-btn:hover {
+    border-color: rgba(79,158,255,0.5);
+    color: #fff;
+    background: rgba(79,158,255,0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 0 rgba(79,158,255,0.3), 0 8px 24px rgba(79,158,255,0.2);
+  }
+  .pause-icon-btn.danger {
+    border-color: rgba(255,79,109,0.2);
+    color: var(--text3);
+  }
+  .pause-icon-btn.danger:hover {
+    border-color: rgba(255,79,109,0.5);
+    color: #fff;
+    background: rgba(255,79,109,0.12);
+    box-shadow: 0 0 0 0 rgba(255,79,109,0.3), 0 8px 24px rgba(255,79,109,0.2);
+  }
 
   /* ---- WIN OVERLAY ---- */
   #win-overlay {
@@ -846,6 +1033,120 @@
     white-space: nowrap;
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ---- HOME STATS ---- */
+  .home-stats {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 14px;
+    animation: startPop 0.55s cubic-bezier(.2,0,.2,1) 2.2s forwards;
+    opacity: 0;
+    padding-bottom: 8px;
+  }
+  .home-stats-title {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .home-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .home-stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .home-stat-card:hover { border-color: var(--accent); }
+  .home-stat-icon { font-size: 14px; margin-bottom: 3px; }
+  .home-stat-val {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .home-stat-lbl {
+    font-size: 7px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .home-stats-row2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .diff-stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .diff-stat-card.easy-card:hover  { border-color: var(--success); }
+  .diff-stat-card.med-card:hover   { border-color: var(--warning); }
+  .diff-stat-card.hard-card:hover  { border-color: var(--danger); }
+  .diff-stat-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin: 0 auto 4px;
+  }
+  .diff-stat-dot.e { background: var(--success); }
+  .diff-stat-dot.m { background: var(--warning); }
+  .diff-stat-dot.h { background: var(--danger); }
+  .diff-stat-num {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .diff-stat-lbl {
+    font-size: 7px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  /* Reset button in settings */
+  .setting-row.reset-row:hover { border-color: var(--danger); box-shadow: 0 0 10px rgba(255,79,109,0.15); }
+
+  #reset-confirm-modal .modal-title { color: var(--danger); -webkit-text-fill-color: var(--danger); background: none; }
+  .reset-confirm-body { padding: 16px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .reset-confirm-text { font-size: 13px; color: var(--text2); line-height: 1.6; text-align: center; }
+  .reset-confirm-btns { display: flex; gap: 10px; }
+  .reset-cancel-btn {
+    flex: 1; padding: 13px; border-radius: 12px;
+    border: 1.5px solid var(--border2); background: var(--surface2);
+    color: var(--text2); font-family: var(--font-display);
+    font-size: 16px; font-weight: 600; letter-spacing: 0.06em;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .reset-cancel-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .reset-confirm-btn {
+    flex: 1; padding: 13px; border-radius: 12px; border: none;
+    background: linear-gradient(135deg, var(--danger), #ff1744);
+    color: #fff; font-family: var(--font-display);
+    font-size: 16px; font-weight: 700; letter-spacing: 0.06em;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(255,79,109,0.35);
+  }
+  .reset-confirm-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255,79,109,0.5); }
 
   /* ---- HOME TOP BAR ---- */
   .home-topbar {
@@ -1081,11 +1382,6 @@
         <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
       </svg>
     </button>
-    <button class="home-icon-btn" onclick="toggleTheme()" id="theme-home-btn" title="Toggle Theme">
-      <svg id="theme-icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-      </svg>
-    </button>
     <button class="home-icon-btn" onclick="openSettings()" title="Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="3"/>
@@ -1096,8 +1392,7 @@
 
   <div class="logo-wrap">
     <div class="logo-title">SUDOKU</div>
-    <div class="logo-sub">Premium Edition</div>
-    <div class="logo-made-by">made by MK</div>
+    <div class="logo-made-by">BY MAYANK BRO</div>
   </div>
   <div class="diff-label">Select Difficulty</div>
   <div class="diff-grid">
@@ -1112,6 +1407,46 @@
     </button>
   </div>
   <button class="start-btn" onclick="startGame()">&#9654; &nbsp; START GAME</button>
+
+
+  <!-- HOME STATS -->
+  <div class="home-stats" id="home-stats-section">
+    <div class="home-stats-title">Your Statistics</div>
+    <div class="home-stats-grid">
+      <div class="home-stat-card">
+        <div class="home-stat-icon">🏆</div>
+        <div class="home-stat-val" id="hs-solved">0</div>
+        <div class="home-stat-lbl">Solved</div>
+      </div>
+      <div class="home-stat-card">
+        <div class="home-stat-icon">⚡</div>
+        <div class="home-stat-val" id="hs-score">0</div>
+        <div class="home-stat-lbl">Best Score</div>
+      </div>
+      <div class="home-stat-card">
+        <div class="home-stat-icon">⏱</div>
+        <div class="home-stat-val" id="hs-time">--</div>
+        <div class="home-stat-lbl">Best Time</div>
+      </div>
+    </div>
+    <div class="home-stats-row2">
+      <div class="diff-stat-card easy-card">
+        <div class="diff-stat-dot e"></div>
+        <div class="diff-stat-num" id="hs-easy">0</div>
+        <div class="diff-stat-lbl">Easy</div>
+      </div>
+      <div class="diff-stat-card med-card">
+        <div class="diff-stat-dot m"></div>
+        <div class="diff-stat-num" id="hs-medium">0</div>
+        <div class="diff-stat-lbl">Medium</div>
+      </div>
+      <div class="diff-stat-card hard-card">
+        <div class="diff-stat-dot h"></div>
+        <div class="diff-stat-num" id="hs-hard">0</div>
+        <div class="diff-stat-lbl">Hard</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ====== SETTINGS MODAL ====== -->
@@ -1165,6 +1500,22 @@
         </div>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--text3);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
+
+      <!-- Reset All Data -->
+      <div class="setting-row reset-row" onclick="confirmReset()">
+        <div class="setting-row-left">
+          <div class="setting-icon" style="background:rgba(255,79,109,0.12);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+            </svg>
+          </div>
+          <div class="setting-text-wrap">
+            <div class="setting-name" style="color:var(--danger);">Reset All Data</div>
+            <div class="setting-desc">Stats, saves & progress</div>
+          </div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
     </div>
   </div>
 </div>
@@ -1193,8 +1544,13 @@
 <div id="game-screen" class="hidden">
   <div class="game-inner">
     <div class="header">
-      <div class="header-logo">SUDOKU</div>
+      <div class="header-logo">SUDOKU BY MK</div>
       <div class="header-actions">
+        <button class="icon-btn" onclick="newGame()" title="New Game">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+          </svg>
+        </button>
         <button class="icon-btn" id="pause-header-btn" onclick="togglePause()" title="Pause / Resume">
           <svg id="pause-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
@@ -1222,10 +1578,7 @@
       </div>
     </div>
 
-    <div class="diff-badge">
-      <div class="diff-dot" id="diff-dot"></div>
-      <span id="diff-badge-text">EASY</span>
-    </div>
+
 
     <div class="board-wrap">
       <div class="board" id="board"></div>
@@ -1235,14 +1588,8 @@
 
     <div class="controls-section">
       <div class="controls-row">
-        <button class="ctrl-btn" onclick="undoMove()" title="Undo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>
-          Undo
-        </button>
-        <button class="ctrl-btn danger-btn" onclick="eraseCell()" title="Erase">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-          Erase
-        </button>
+
+
         <button class="ctrl-btn" id="notes-btn" onclick="toggleNotes()" title="Notes">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Notes
@@ -1252,10 +1599,7 @@
           Hint
           <span class="hint-count" id="hint-count-label">3 left</span>
         </button>
-        <button class="ctrl-btn danger-btn" onclick="newGame()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-          New
-        </button>
+
       </div>
     </div>
 
@@ -1264,31 +1608,74 @@
   </div>
 </div>
 
+<!-- ====== RESET CONFIRM MODAL ====== -->
+<div class="modal-backdrop hidden" id="reset-confirm-modal" onclick="closeResetOnBg(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">RESET DATA</div>
+      <button class="modal-close" onclick="closeResetModal()">x</button>
+    </div>
+    <div class="reset-confirm-body">
+      <div class="reset-confirm-text">
+        Sab kuch reset ho jaayega<br>
+        <strong>Stats, Saves aur Progress</strong><br>
+        Yeh action undo nahi ho sakti!
+      </div>
+      <div class="reset-confirm-btns">
+        <button class="reset-cancel-btn" onclick="closeResetModal()">Cancel</button>
+        <button class="reset-confirm-btn" onclick="doReset()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ====== PAUSE OVERLAY ====== -->
 <div id="pause-overlay" class="hidden">
-  <div class="pause-title">PAUSED</div>
-  <button class="resume-btn" onclick="togglePause()">▶ RESUME</button>
-  <div class="pause-action-row">
-    <button class="pause-icon-btn" onclick="toggleThemeFromPause()" title="Toggle Theme" id="pause-theme-btn">
-      <svg id="pause-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-      </svg>
-      <span>Theme</span>
-    </button>
-    <button class="pause-icon-btn" onclick="toggleFullscreen()" title="Fullscreen" id="pause-fs-btn">
-      <svg id="fs-icon-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
-        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-      </svg>
-      <span>Fullscr</span>
-    </button>
-    <button class="pause-icon-btn" onclick="goHome()" title="Main Menu">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-        <polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>
-      <span>Home</span>
-    </button>
+  <div class="pause-bg"></div>
+  <div class="pause-glow"></div>
+
+  <div class="pause-content">
+    <div class="pause-title" data-text="PAUSED">PAUSED</div>
+
+    <div class="pause-pills">
+      <div class="pause-pill">
+        <div class="pause-pill-label">Time</div>
+        <div class="pause-pill-val" id="pause-time-val">00:00</div>
+      </div>
+      <div class="pause-pill">
+        <div class="pause-pill-label">Mistakes</div>
+        <div class="pause-pill-val" id="pause-mistakes-val">0</div>
+      </div>
+      <div class="pause-pill">
+        <div class="pause-pill-label">Score</div>
+        <div class="pause-pill-val" id="pause-score-val">0</div>
+      </div>
+    </div>
+
+    <button class="resume-btn" onclick="togglePause()">&#9654;&nbsp; RESUME</button>
+
+    <div class="pause-action-row">
+      <button class="pause-icon-btn" onclick="toggleThemeFromPause()" id="pause-theme-btn">
+        <svg id="pause-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+        <span>Toggle Theme</span>
+      </button>
+      <button class="pause-icon-btn" onclick="toggleFullscreen()" id="pause-fs-btn">
+        <svg id="fs-icon-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        <span>Fullscreen</span>
+      </button>
+      <button class="pause-icon-btn" onclick="goHome()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Main Menu</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1312,7 +1699,7 @@
   </div>
   <div class="win-btns">
     <button class="win-btn secondary" onclick="goHome()">Menu</button>
-    <button class="win-btn primary" onclick="newGame()">Play Again</button>
+    <button class="win-btn primary" onclick="playAgain()">Play Again</button>
   </div>
 </div>
 
@@ -1474,7 +1861,6 @@ function startGame(){
   sfxClick();
   const startScr = document.getElementById('start-screen');
   const gameScr  = document.getElementById('game-screen');
-  // Slide-out animation on start screen
   startScr.classList.add('slide-out');
   setTimeout(() => {
     startScr.classList.add('hidden');
@@ -1485,13 +1871,14 @@ function startGame(){
     document.getElementById('win-overlay').classList.add('hidden');
     renderAll();
     startTimer();
-    loadSave();
     setTimeout(() => gameScr.classList.remove('slide-in'), 500);
   }, 420);
 }
+
+
 function goHome(){
   sfxClick();
-  saveCurrent();
+  // Sirf tab save karo jab game abhi chal rahi ho (win/gameover nahi)
   clearInterval(timerInterval);
   const gameScr  = document.getElementById('game-screen');
   const startScr = document.getElementById('start-screen');
@@ -1499,12 +1886,12 @@ function goHome(){
   document.getElementById('pause-overlay').classList.add('hidden');
   document.getElementById('win-overlay').classList.add('hidden');
   startScr.classList.remove('hidden');
-  // Re-trigger entrance animations by resetting the start screen elements
   startScr.querySelectorAll('.logo-title,.logo-sub,.logo-made-by,.diff-label,.diff-grid,.start-btn').forEach(el => {
     el.style.animation = 'none';
-    el.offsetHeight; // reflow
+    el.offsetHeight;
     el.style.animation = '';
   });
+  updateHomeStats();
 }
 function newGame(){
   sfxClick();
@@ -1516,6 +1903,16 @@ function newGame(){
   startTimer();
 }
 
+function playAgain(){
+  sfxClick();
+  clearInterval(timerInterval);
+  const diff = state.difficulty || selectedDiff;
+  state = freshState(diff);
+  document.getElementById('win-overlay').classList.add('hidden');
+  renderAll();
+  startTimer();
+}
+
 /* ========= TIMER ========= */
 function startTimer(){
   clearInterval(timerInterval);
@@ -1523,7 +1920,6 @@ function startTimer(){
     if(!state.paused&&!state.gameOver){
       state.time++;
       updateTimerDisplay();
-      if(state.time%30===0) saveCurrent();
     }
   },1000);
 }
@@ -1606,9 +2002,23 @@ function renderNumpad(){
   pad.innerHTML='';
   const counts=Array(10).fill(0);
   state.board.forEach(v=>{ if(v>0) counts[v]++; });
+
+  // Notes highlight — selected cell ke notes padhkar numpad pe green dikhao
+  let activeNotes = new Set();
+  const sel = state.selected;
+
+  if(sel !== null && state.board[sel] === 0){
+    if(state.notes[sel] && state.notes[sel].size > 0)
+      activeNotes = state.notes[sel];
+
+    }
+
   for(let n=1;n<=9;n++){
     const btn=document.createElement('button');
-    btn.className='num-btn'+(counts[n]>=9?' completed':'');
+    let cls = 'num-btn';
+    if(counts[n] >= 9)          cls += ' completed';
+    if(activeNotes.has(n))      cls += ' note-active';
+    btn.className = cls;
     btn.innerHTML=`<span>${n}</span>`;
     btn.onclick=()=>inputNum(n);
     pad.appendChild(btn);
@@ -1625,11 +2035,7 @@ function updateStats(){
   updateTimerDisplay();
 }
 function updateDiffBadge(){
-  const dot=document.getElementById('diff-dot');
-  const text=document.getElementById('diff-badge-text');
-  const d=state.difficulty;
-  dot.className='diff-dot'+(d==='medium'?' medium':d==='hard'?' hard':'');
-  text.textContent=d.toUpperCase();
+  // Badge removed from UI — nothing to update
 }
 
 /* ========= CELL INTERACTION ========= */
@@ -1666,11 +2072,22 @@ function inputNum(n){
 
   state.board[idx]=n;
   if(n!==state.solved[idx]){
-    if(true){
-      sfxError();
-      state.mistakes++;
-      if(state.mistakes>=state.maxMistakes){ gameOver(); }
-    }
+    sfxError();
+    state.mistakes++;
+    updateBoardDisplay();
+    renderNumpad();
+    updateStats();
+    if(state.mistakes>=state.maxMistakes){ gameOver(); return; }
+    // Auto-erase after shake animation completes
+    setTimeout(()=>{
+      if(state.board[idx]===n){
+        state.board[idx]=0;
+        updateBoardDisplay();
+        renderNumpad();
+        updateHintBtn();
+      }
+    }, 600);
+    return;
   } else {
     state.score+=Math.max(10, 100-state.time);
     clearNotesAround(idx,n);
@@ -1806,6 +2223,15 @@ function togglePause(){
   if(icon){
     if(state.paused){
       icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+      // Update pause card stats
+      const m=Math.floor(state.time/60).toString().padStart(2,'0');
+      const s=(state.time%60).toString().padStart(2,'0');
+      const pt=document.getElementById('pause-time-val');
+      const pm=document.getElementById('pause-mistakes-val');
+      const ps=document.getElementById('pause-score-val');
+      if(pt) pt.textContent=`${m}:${s}`;
+      if(pm) pm.textContent=state.mistakes;
+      if(ps) ps.textContent=state.score;
     } else {
       icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
     }
@@ -1909,7 +2335,7 @@ function triggerWin(){
     document.getElementById('win-overlay').classList.remove('hidden');
     spawnConfetti();
   }, 400);
-  localStorage.removeItem('sudoku_save');
+  recordWin(state.difficulty, state.time, state.score);
 }
 function gameOver(){
   state.gameOver=true;
@@ -2047,38 +2473,73 @@ document.addEventListener('keydown', e=>{
   selectCell(next);
 });
 
-/* ========= SAVE/LOAD ========= */
-function saveCurrent(){
-  if(!state.puzzle) return;
+
+
+
+/* ========= GLOBAL STATS ========= */
+function getStats(){
   try {
-    const save={
-      ...state,
-      notes: state.notes.map(s=>[...s]),
-      undoStack: [],
-      };
-    localStorage.setItem('sudoku_save', JSON.stringify(save));
-  } catch(e){}
+    const raw = localStorage.getItem('sudoku_stats');
+    if(!raw) return { solved:0, bestScore:0, bestTime:null, easy:0, medium:0, hard:0 };
+    return JSON.parse(raw);
+  } catch(e){ return { solved:0, bestScore:0, bestTime:null, easy:0, medium:0, hard:0 }; }
 }
-function loadSave(){
-  try {
-    const raw=localStorage.getItem('sudoku_save');
-    if(!raw) return;
-    const save=JSON.parse(raw);
-    if(save.difficulty!==state.difficulty) return;
-    save.notes=save.notes.map(a=>new Set(a));
-    save.undoStack=[];
-    state={...save};
-    showToast('Progress restored!');
-    updateBoardDisplay();
-    renderNumpad();
-    updateStats();
-  } catch(e){}
+function saveStats(st){ localStorage.setItem('sudoku_stats', JSON.stringify(st)); }
+
+function recordWin(difficulty, time, score){
+  const st = getStats();
+  st.solved++;
+  st.easy   += difficulty==='easy'   ? 1 : 0;
+  st.medium += difficulty==='medium' ? 1 : 0;
+  st.hard   += difficulty==='hard'   ? 1 : 0;
+  if(score > st.bestScore) st.bestScore = score;
+  if(st.bestTime === null || time < st.bestTime) st.bestTime = time;
+  saveStats(st);
+  updateHomeStats();
 }
+
+function updateHomeStats(){
+  const st = getStats();
+  const el = id => document.getElementById(id);
+  if(el('hs-solved'))  el('hs-solved').textContent  = st.solved;
+  if(el('hs-score'))   el('hs-score').textContent   = st.bestScore;
+  if(el('hs-easy'))    el('hs-easy').textContent    = st.easy;
+  if(el('hs-medium'))  el('hs-medium').textContent  = st.medium;
+  if(el('hs-hard'))    el('hs-hard').textContent    = st.hard;
+  if(el('hs-time')){
+    if(st.bestTime !== null){
+      const m = Math.floor(st.bestTime/60).toString().padStart(2,'0');
+      const s = (st.bestTime%60).toString().padStart(2,'0');
+      el('hs-time').textContent = `${m}:${s}`;
+    } else {
+      el('hs-time').textContent = '--';
+    }
+  }
+}
+
+function confirmReset(){
+  document.getElementById('reset-confirm-modal').classList.remove('hidden');
+}
+function closeResetModal(){
+  document.getElementById('reset-confirm-modal').classList.add('hidden');
+}
+function closeResetOnBg(e){
+  if(e.target===document.getElementById('reset-confirm-modal')) closeResetModal();
+}
+function doReset(){
+  localStorage.removeItem('sudoku_stats');
+  updateHomeStats();
+  closeResetModal();
+  closeSettings();
+  showToast('All data reset!');
+}
+
 function loadTheme(){
   const t=localStorage.getItem('sudoku_theme');
   if(t==='light'){themeLight=true; document.body.classList.add('light-mode');}
 }
 loadTheme();
+updateHomeStats();
 </script>
 </body>
 </html>
