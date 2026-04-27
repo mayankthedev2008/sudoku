@@ -59,29 +59,21 @@
     overflow-x: hidden;
     transition: background 0.4s, color 0.4s;
   }
+  /* Rain only visible on home screen */
+  #rain-canvas { display: block; }
+  #game-screen:not(.hidden) ~ #rain-canvas,
+  body.game-active #rain-canvas { display: none; }
 
   /* ---- PARTICLES ---- */
 
-  /* Number Rain */
-  #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-  .num-drop {
+  /* Number Rain Canvas */
+  #rain-canvas {
     position: fixed;
-    top: -80px;
-    font-family: 'Rajdhani', sans-serif;
-    font-weight: 700;
-    line-height: 1;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     pointer-events: none;
-    user-select: none;
-    opacity: 0;
-    animation: numRain linear infinite;
-    will-change: transform, opacity;
     z-index: 0;
-  }
-  @keyframes numRain {
-    0%   { transform: translateY(0px);   opacity: 0; }
-    4%   { opacity: 1; }
-    88%  { opacity: 0.7; }
-    100% { transform: translateY(110vh); opacity: 0; }
+    opacity: 1;
   }
 
   /* ---- SCREENS ---- */
@@ -90,7 +82,7 @@
 
   /* ---- START SCREEN ---- */
   #start-screen {
-    background: var(--bg);
+    background: transparent;
     gap: 0;
     overflow-y: auto;
     justify-content: center;
@@ -301,6 +293,7 @@
     padding: 0;
     transition: background 0.4s;
   }
+  /* Hide rain when game is active */
   #game-screen.hidden { display: none; }
 
   .game-inner {
@@ -1414,7 +1407,7 @@
 </head>
 <body>
 
-<div id="particles"></div>
+<canvas id="rain-canvas"></canvas>
 
 <!-- ====== START SCREEN ====== -->
 <div class="screen" id="start-screen">
@@ -1783,32 +1776,86 @@ function sfxNote() { playTone(1200, 'sine', 0.05, 0.05); }
 
 /* ========= PARTICLES ========= */
 function initParticles() {
-  const c = document.getElementById('particles');
-  const nums = ['1','2','3','4','5','6','7','8','9'];
-  const colorSets = [
-    [79,158,255],   // blue
-    [123,95,255],   // purple
-    [0,229,200],    // cyan
-  ];
-  const count = 42;
-  for(let i = 0; i < count; i++){
-    const el  = document.createElement('div');
-    el.className = 'num-drop';
-    const num  = nums[Math.floor(Math.random() * 9)];
-    const size = Math.random() * 22 + 12;          // 12–34px
-    const dur  = Math.random() * 10 + 8;           // 8–18s
-    const delay = -(Math.random() * 18);            // stagger so they dont all start together
-    const left  = Math.random() * 98 + 1;           // 1–99%
-    const alpha = (Math.random() * 0.22 + 0.10).toFixed(2); // 0.10–0.32 — clearly visible
-    const [r,g,b] = colorSets[Math.floor(Math.random() * colorSets.length)];
-    el.textContent = num;
-    el.style.left            = left + '%';
-    el.style.fontSize        = size + 'px';
-    el.style.color           = `rgba(${r},${g},${b},${alpha})`;
-    el.style.animationDuration  = dur + 's';
-    el.style.animationDelay     = delay + 's';
-    c.appendChild(el);
+  const canvas = document.getElementById('rain-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  // Canvas size
+  function resize(){
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const NUMS   = ['1','2','3','4','5','6','7','8','9'];
+  const COLORS = [
+    [79,  158, 255],  // blue
+    [123, 95,  255],  // purple
+    [0,   229, 200],  // cyan
+    [79,  158, 255],  // blue again (higher chance)
+  ];
+
+  // Each drop: column-based like Matrix
+  const COL_W  = 28;
+  let   cols   = [];
+
+  function initCols(){
+    cols = [];
+    const n = Math.floor(canvas.width / COL_W) + 1;
+    for(let i = 0; i < n; i++){
+      cols.push({
+        x:     i * COL_W + Math.random() * 10,
+        y:     Math.random() * -canvas.height,   // start off-screen at random heights
+        speed: Math.random() * 1.2 + 0.4,        // 0.4–1.6 px/frame
+        size:  Math.floor(Math.random() * 12) + 12, // 12–24px
+        num:   NUMS[Math.floor(Math.random() * 9)],
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        alpha: Math.random() * 0.20 + 0.10,       // 0.10–0.30
+        changeEvery: Math.floor(Math.random() * 40) + 20,
+        tick: 0,
+      });
+    }
+  }
+  initCols();
+  window.addEventListener('resize', initCols);
+
+  function draw(){
+    // Fade trail
+    ctx.fillStyle = 'rgba(0,0,0,0)';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for(let d of cols){
+      d.tick++;
+      // Occasionally change number
+      if(d.tick % d.changeEvery === 0){
+        d.num   = NUMS[Math.floor(Math.random() * 9)];
+        d.alpha = Math.random() * 0.20 + 0.10;
+      }
+
+      const [r,g,b] = d.color;
+      ctx.font      = `700 ${d.size}px 'Rajdhani', sans-serif`;
+      ctx.fillStyle = `rgba(${r},${g},${b},${d.alpha})`;
+      ctx.fillText(d.num, d.x, d.y);
+
+      // Ghost trail — slightly smaller above
+      ctx.fillStyle = `rgba(${r},${g},${b},${d.alpha * 0.35})`;
+      ctx.fillText(d.num, d.x, d.y - d.size * 1.2);
+
+      d.y += d.speed;
+
+      // Reset when off screen
+      if(d.y > canvas.height + 40){
+        d.y     = -Math.random() * 200 - 40;
+        d.speed = Math.random() * 1.2 + 0.4;
+        d.num   = NUMS[Math.floor(Math.random() * 9)];
+        d.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        d.alpha = Math.random() * 0.20 + 0.10;
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
 }
 initParticles();
 
@@ -2001,6 +2048,7 @@ function startGame(){
   setTimeout(() => {
     startScr.classList.add('hidden');
     startScr.classList.remove('slide-out');
+    document.body.classList.add('game-active');
     state = freshState(selectedDiff);
     gameScr.classList.remove('hidden');
     gameScr.classList.add('slide-in');
@@ -2014,8 +2062,8 @@ function startGame(){
 
 function goHome(){
   sfxClick();
-  // Sirf tab save karo jab game abhi chal rahi ho (win/gameover nahi)
   clearInterval(timerInterval);
+  document.body.classList.remove('game-active');
   const gameScr  = document.getElementById('game-screen');
   const startScr = document.getElementById('start-screen');
   gameScr.classList.add('hidden');
