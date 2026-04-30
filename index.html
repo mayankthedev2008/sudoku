@@ -549,6 +549,146 @@
   .cell.selected.wrong { box-shadow: inset 0 0 0 2px var(--danger); background: rgba(255,79,109,0.1) !important; }
   .cell.complete { color: var(--success); cursor: default; font-weight: 700; }
   .cell.complete:hover { background: rgba(0,229,160,0.05) !important; }
+
+  /* Cell correct fill pop animation */
+  @keyframes cellPop {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.28); }
+    65%  { transform: scale(0.92); }
+    100% { transform: scale(1); }
+  }
+  .cell.pop-anim { animation: cellPop 0.35s cubic-bezier(.36,.07,.19,.97); }
+
+  /* Number completion celebration */
+  @keyframes numComplete {
+    0%   { transform: scale(1) rotate(0deg); filter: brightness(1); }
+    25%  { transform: scale(1.22) rotate(-8deg); filter: brightness(1.4); }
+    50%  { transform: scale(1.18) rotate(6deg); filter: brightness(1.3); }
+    75%  { transform: scale(1.1) rotate(-3deg); filter: brightness(1.2); }
+    100% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+  }
+  .num-btn.num-complete-anim { animation: numComplete 0.5s ease; }
+
+  /* Floating +score text */
+  .score-float {
+    position: fixed;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--success);
+    pointer-events: none;
+    z-index: 100;
+    text-shadow: 0 0 10px rgba(0,229,160,0.6);
+    animation: scoreFloatUp 0.9s ease forwards;
+  }
+  @keyframes scoreFloatUp {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
+  }
+
+  /* Magic fill pulse */
+  @keyframes magicFill {
+    0%   { background: rgba(0,229,200,0.0); }
+    40%  { background: rgba(0,229,200,0.3); }
+    100% { background: rgba(0,229,200,0.0); }
+  }
+  .cell.magic-fill { animation: magicFill 0.5s ease; }
+
+  /* ── THEMES ── */
+  /* Amoled Black */
+  .theme-amoled {
+    --bg: #000000;
+    --surface: #0a0a0a;
+    --surface2: #111111;
+    --surface3: #1a1a1a;
+    --border: #1e1e1e;
+    --border2: #2a2a2a;
+    --accent: #00e5ff;
+    --accent2: #7c4dff;
+    --accent3: #00e676;
+    --text: #ffffff;
+    --text2: #aaaaaa;
+    --text3: #555555;
+    --glow: rgba(0,229,255,0.15);
+  }
+  /* Ocean Blue */
+  .theme-ocean {
+    --bg: #020d1a;
+    --surface: #041628;
+    --surface2: #071e35;
+    --surface3: #0a2642;
+    --border: #0d3055;
+    --border2: #10406e;
+    --accent: #00b4d8;
+    --accent2: #0096c7;
+    --accent3: #48cae4;
+    --text: #caf0f8;
+    --text2: #6ab4cc;
+    --text3: #2d6a82;
+    --glow: rgba(0,180,216,0.2);
+  }
+  /* Forest Green */
+  .theme-forest {
+    --bg: #020d05;
+    --surface: #041208;
+    --surface2: #071a0c;
+    --surface3: #0a2210;
+    --border: #0d3318;
+    --border2: #10441f;
+    --accent: #2ecc71;
+    --accent2: #27ae60;
+    --accent3: #1abc9c;
+    --text: #d5f5e3;
+    --text2: #7dcea0;
+    --text3: #2e7d52;
+    --glow: rgba(46,204,113,0.2);
+  }
+  /* Sunset */
+  .theme-sunset {
+    --bg: #120508;
+    --surface: #1e080e;
+    --surface2: #2a0c14;
+    --surface3: #36101a;
+    --border: #4a1520;
+    --border2: #5e1b28;
+    --accent: #ff6b6b;
+    --accent2: #ee5a24;
+    --accent3: #ffd32a;
+    --text: #ffeaa7;
+    --text2: #e17055;
+    --text3: #6d2b3d;
+    --glow: rgba(255,107,107,0.2);
+  }
+
+  /* Theme picker */
+  .theme-picker {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+  .theme-swatch {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  }
+  .theme-swatch.active { border-color: #fff; transform: scale(1.15); }
+  .theme-swatch:hover { transform: scale(1.1); }
+  .theme-swatch span {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0;
+  }
+
+  
   .cell.hint-cell { animation: hintReveal 0.5s ease; color: var(--accent3); }
 
   /* ── Completion Flash — Row / Col ── */
@@ -1602,6 +1742,30 @@
         </div>
         <div class="toggle on" id="sound-toggle-modal"></div>
       </div>
+      <!-- Theme Picker -->
+      <div class="setting-row" style="cursor:default; flex-direction:column; align-items:flex-start; gap:0;">
+        <div class="setting-row-left" style="margin-bottom:0;">
+          <div class="setting-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a10 10 0 010 20"/>
+              <path d="M12 2c2.76 0 5 4.48 5 10s-2.24 10-5 10"/>
+            </svg>
+          </div>
+          <div class="setting-text-wrap">
+            <div class="setting-name">Theme</div>
+            <div class="setting-desc">Choose your color theme</div>
+          </div>
+        </div>
+        <div class="theme-picker">
+          <div class="theme-swatch active" id="sw-default" style="background:linear-gradient(135deg,#4f9eff,#7b5fff)" onclick="setTheme('default',this)"><span>🌙</span></div>
+          <div class="theme-swatch" id="sw-amoled" style="background:linear-gradient(135deg,#00e5ff,#7c4dff)" onclick="setTheme('amoled',this)"><span>⚫</span></div>
+          <div class="theme-swatch" id="sw-ocean" style="background:linear-gradient(135deg,#00b4d8,#0096c7)" onclick="setTheme('ocean',this)"><span>🌊</span></div>
+          <div class="theme-swatch" id="sw-forest" style="background:linear-gradient(135deg,#2ecc71,#1abc9c)" onclick="setTheme('forest',this)"><span>🌿</span></div>
+          <div class="theme-swatch" id="sw-sunset" style="background:linear-gradient(135deg,#ff6b6b,#ffd32a)" onclick="setTheme('sunset',this)"><span>🌅</span></div>
+        </div>
+      </div>
+
       <div class="setting-row" onclick="openCredits()">
         <div class="setting-row-left">
           <div class="setting-icon green">
@@ -1728,6 +1892,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Notes
         </button>
+
         <button class="ctrl-btn" id="hint-btn" onclick="useHint()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           Hint
@@ -2377,7 +2542,10 @@ function inputNum(n){
     return;
   } else {
     state.score+=Math.max(10, 100-state.time);
-    clearNotesAround(idx,n);
+    clearNotesAround(idx,n); // auto-remove notes
+    animateCellPop(idx);
+    showScoreFloat(idx);
+    celebrateNumber(n);
   }
 
   updateBoardDisplay();
@@ -2385,6 +2553,7 @@ function inputNum(n){
   updateStats();
   updateHintBtn();
   checkCompletions(idx);
+  checkAndAutoFill();
   checkWin();
 }
 
@@ -2396,6 +2565,116 @@ function clearNotesAround(idx, n){
       state.notes[i].delete(n);
     }
   }
+}
+
+/* ── Cell pop animation on correct fill ── */
+function animateCellPop(idx){
+  const cell = document.getElementById('board').children[idx];
+  if(!cell) return;
+  cell.classList.remove('pop-anim');
+  void cell.offsetWidth;
+  cell.classList.add('pop-anim');
+  setTimeout(()=> cell.classList.remove('pop-anim'), 400);
+}
+
+/* ── Floating score text ── */
+function showScoreFloat(idx){
+  const cell = document.getElementById('board').children[idx];
+  if(!cell) return;
+  const rect = cell.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'score-float';
+  el.textContent = '+' + Math.max(10, 100 - state.time);
+  el.style.left = (rect.left + rect.width/2 - 20) + 'px';
+  el.style.top  = (rect.top - 10) + 'px';
+  document.body.appendChild(el);
+  setTimeout(()=> el.remove(), 950);
+}
+
+/* ── Number completion celebration ── */
+function celebrateNumber(n){
+  const counts = Array(10).fill(0);
+  state.board.forEach(v => { if(v>0) counts[v]++; });
+  if(counts[n] < 9) return;
+  // Animate numpad button
+  const btns = document.querySelectorAll('.num-btn');
+  btns.forEach(btn => {
+    if(btn.querySelector('span')?.textContent == n){
+      btn.classList.remove('num-complete-anim');
+      void btn.offsetWidth;
+      btn.classList.add('num-complete-anim');
+      setTimeout(()=> btn.classList.remove('num-complete-anim'), 600);
+    }
+  });
+  // Sound
+  [523,659,784,1047].forEach((f,i)=> setTimeout(()=>playTone(f,'sine',0.2,0.1,1),i*70));
+}
+
+/* ── Last Cell Auto Fill ── */
+function getPossibleNums(idx){
+  if(state.board[idx] !== 0) return [];
+  const r = Math.floor(idx/9), c = idx%9;
+  const br = Math.floor(r/3)*3, bc = Math.floor(c/3)*3;
+  const used = new Set();
+  for(let i=0;i<9;i++){
+    used.add(state.board[r*9+i]);
+    used.add(state.board[i*9+c]);
+    used.add(state.board[(br+Math.floor(i/3))*9+bc+i%3]);
+  }
+  return [1,2,3,4,5,6,7,8,9].filter(n => !used.has(n));
+}
+
+function checkAndAutoFill(){
+  // Count remaining empty cells
+  const emptyCells = [];
+  for(let i=0;i<81;i++){
+    if(state.board[i] === 0 && !state.given[i]) emptyCells.push(i);
+  }
+
+  // Sirf ek cell bachi ho tab auto-fill karo
+  if(emptyCells.length === 1){
+    const idx = emptyCells[0];
+    const possible = getPossibleNums(idx);
+    if(possible.length === 1){
+      const n = possible[0];
+
+      // Last cell special animation
+      const cell = document.getElementById('board').children[idx];
+      cell.classList.add('last-cell-glow');
+
+      setTimeout(()=>{
+        state.board[idx] = n;
+        state.notes[idx].clear();
+        clearNotesAround(idx, n);
+        state.score += Math.max(10, 100 - state.time);
+        cell.classList.remove('last-cell-glow');
+        animateCellPop(idx);
+        celebrateNumber(n);
+        sfxHint();
+        updateBoardDisplay();
+        renderNumpad();
+        updateStats();
+        checkCompletions(idx);
+        checkWin();
+      }, 600);
+    }
+  }
+}
+
+/* ── Themes ── */
+const THEMES = ['default','amoled','ocean','forest','sunset'];
+function setTheme(name, el){
+  document.body.classList.remove(...THEMES.map(t=>'theme-'+t));
+  if(name !== 'default') document.body.classList.add('theme-'+name);
+  document.querySelectorAll('.theme-swatch').forEach(s=> s.classList.remove('active'));
+  if(el) el.classList.add('active');
+  localStorage.setItem('sudoku_theme_name', name);
+  sfxClick();
+}
+function loadThemeName(){
+  const saved = localStorage.getItem('sudoku_theme_name') || 'default';
+  const el = document.getElementById('sw-' + saved);
+  setTheme(saved, el);
 }
 
 function eraseCell(){
@@ -2487,17 +2766,16 @@ function updateHintBtn(){
   btn.style.filter        = isActive ? '' : 'grayscale(0.5)';
   btn.style.transition    = 'opacity 0.3s, filter 0.3s';
 
-  // Notes button bhi same — sirf khaali cell pe active
+  // Notes button — sirf khaali cell pe active
   const nbtn = document.getElementById('notes-btn');
-  if(!nbtn) return;
-  const notesActive =
-    idx !== null &&
-    !state.given[idx] &&
-    state.board[idx] === 0;
-  nbtn.style.opacity       = notesActive ? '1' : '0.35';
-  nbtn.style.pointerEvents = notesActive ? '' : 'none';
-  nbtn.style.filter        = notesActive ? '' : 'grayscale(0.5)';
-  nbtn.style.transition    = 'opacity 0.3s, filter 0.3s';
+  if(nbtn){
+    const notesActive = idx !== null && !state.given[idx] && state.board[idx] === 0;
+    nbtn.style.opacity       = notesActive ? '1' : '0.35';
+    nbtn.style.pointerEvents = notesActive ? '' : 'none';
+    nbtn.style.filter        = notesActive ? '' : 'grayscale(0.5)';
+    nbtn.style.transition    = 'opacity 0.3s, filter 0.3s';
+  }
+
 }
 
 /* theme toggle from pause overlay */
@@ -2862,6 +3140,7 @@ function loadTheme(){
   if(t==='light'){themeLight=true; document.body.classList.add('light-mode');}
 }
 loadTheme();
+loadThemeName();
 updateHomeStats();
 loadFontSize();
 </script>
